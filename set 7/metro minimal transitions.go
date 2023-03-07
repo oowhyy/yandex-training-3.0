@@ -79,12 +79,12 @@ func solve() {
 	}
 	dCount := 0
 
-	// bfs
 	q := []int{}
 	for k := range startLines {
 		depth[k] = dCount
 		q = append(q, k)
 	}
+	// bfs
 	for len(q) > 0 {
 		newQ := []int{}
 		dCount++
