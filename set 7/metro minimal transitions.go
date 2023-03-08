@@ -23,10 +23,26 @@ func main() {
 	solve()
 }
 
-type point struct {
-	x int
-	y int
-	z int
+func lineHasStation(arr1 []int, st int) bool {
+	for _, v := range arr1 {
+		if v == st {
+			return true
+		}
+	}
+	return false
+}
+
+func hasCommonStation(arr1, arr2 []int) bool {
+	mp := map[int]bool{}
+	for _, v := range arr1 {
+		mp[v] = true
+	}
+	for _, v := range arr2 {
+		if mp[v] {
+			return true
+		}
+	}
+	return false
 }
 
 func solve() {
@@ -72,13 +88,12 @@ func solve() {
 		}
 	}
 
-	//depth[i] - minimal number of transitions form start lines to line i
+	//depth[i] - minimal number of transitions form some of start lines to line i
 	depth := make([]int, m)
 	for i := range depth {
 		depth[i] = -1
 	}
 	dCount := 0
-
 	q := []int{}
 	for k := range startLines {
 		depth[k] = dCount
@@ -99,6 +114,7 @@ func solve() {
 		}
 		q = newQ
 	}
+	// get best reult
 	res := 1000000000
 	for lineId := range endLines {
 		if depth[lineId] != -1 && depth[lineId] < res {
@@ -110,26 +126,4 @@ func solve() {
 		return
 	}
 	fprintln(res)
-}
-
-func lineHasStation(arr1 []int, st int) bool {
-	for _, v := range arr1 {
-		if v == st {
-			return true
-		}
-	}
-	return false
-}
-
-func hasCommonStation(arr1, arr2 []int) bool {
-	mp := map[int]bool{}
-	for _, v := range arr1 {
-		mp[v] = true
-	}
-	for _, v := range arr2 {
-		if mp[v] {
-			return true
-		}
-	}
-	return false
 }

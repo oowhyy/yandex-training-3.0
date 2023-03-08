@@ -26,38 +26,44 @@ func main() {
 func solve() {
 	var n, m, a, b int
 	fscan(&n, &m)
-	edges := map[int][]int{}
+	graph := make([][]int, n+1)
 	for i := 0; i < m; i++ {
 		fscan(&a, &b)
-		edges[a] = append(edges[a], b)
-		edges[b] = append(edges[b], a)
+		graph[a] = append(graph[a], b)
+		//graph[b] = append(graph[b], a)
 	}
-	seen := map[int]bool{}
+	colors := map[int]int{}
+	hasCycle := false
+	res := []int{}
+	// dfs
 	var dfs func(int)
-	comp := []int{}
 	dfs = func(start int) {
-		seen[start] = true
-		comp = append(comp, start)
-		for _, v := range edges[start] {
-			if !seen[v] {
+		// color grey on enter
+		colors[start] = 1
+		for _, v := range graph[start] {
+			if vColor, ok := colors[v]; !ok {
 				dfs(v)
+			} else if vColor == 1 { // seeing grey vertex - there is cycle
+				hasCycle = true
+				return
 			}
+
 		}
+		// color black on extit and append to result
+		colors[start] = 2
+		res = append(res, start)
 	}
-	res := [][]int{}
-	for i := 1; i <= n; i++ {
-		if !seen[i] {
+	// main loop
+	for i := 1; i < n+1; i++ {
+		if colors[i] == 0 {
 			dfs(i)
-			res = append(res, comp[:])
-			comp = []int{}
 		}
 	}
-	fprintln(len(res))
-	for _, arr := range res {
-		fprintln(len(arr))
-		for _, vv := range arr {
-			fmt.Fprint(out, vv, " ")
-		}
-		fprintln()
+	if hasCycle {
+		fprintln("-1")
+		return
+	}
+	for i := range res {
+		fmt.Fprint(out, res[n-i-1], " ")
 	}
 }
